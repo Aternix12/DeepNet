@@ -34,14 +34,14 @@ def neural_network_model(data):
     l3 = tf.add(tf.matmul(l2, hidden_3_layer['weights']), hidden_3_layer['biases'])
     l3 = tf.nn.relu(l3)
 
-    output = tf.add(tf.matmul(l3, output_layer['weights']) + output_layer['biases'])
+    output = (tf.matmul(l3, output_layer['weights']) + output_layer['biases'])
 
     return output
 
 
 def train_neural_network(x):
     prediction = neural_network_model(x)  # Creating a one-hot
-    cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(prediction, y))
+    cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=prediction, labels=y))
 
     # learning_rate at 0.001
     optimizer = tf.train.AdamOptimizer().minimize(cost)  # Using tensor optimizer to minimize cost
@@ -49,7 +49,7 @@ def train_neural_network(x):
     hm_epochs = 10
 
     with tf.Session() as sess:
-        sess.run(tf.initialize_all_variables())
+        sess.run(tf.global_variables_initializer())
 
         # Training Data
         for epoch in range(hm_epochs):
